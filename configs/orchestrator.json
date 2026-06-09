@@ -1,0 +1,30 @@
+{
+    "session_count": 1500,
+
+    "overage_factor": 1.2,
+    
+    "sampling_ranges": {
+        "time_of_day_min": 6.0,
+        "time_of_day_max": 20.0,
+        "cloud_coverage_min": 0.0,
+        "cloud_coverage_max": 1.0,
+        "fog_density_min": 0.0,
+        "fog_density_max": 1.0,
+        "rain_intensity_min": 0.0,
+        "rain_intensity_max": 1.0,
+        "snow_intensity_min": 0.0,
+        "snow_intensity_max": 1.0,
+        "wind_intensity_min": 0.0,
+        "wind_intensity_max": 1.0,
+        "ground_material_variant_min": 0,
+        "ground_material_variant_max": 5
+    },
+
+    "drone_count_distribution": {
+        "0": 0.23,
+        "1": 0.40,
+        "2": 0.25,
+        "3": 0.10,
+        "4": 0.02
+    }
+}
