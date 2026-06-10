@@ -2,3 +2,14 @@ docs/
 output/
 __pycache__/
 *.pyc
+
+# Machine-specific
+.mcp.json
+
+# UE5 generated
+SynthVision/Binaries/
+SynthVision/Intermediate/
+SynthVision/Saved/
+SynthVision/DerivedDataCache/
+SynthVision/.vs/
+SynthVision/*.VC.db
