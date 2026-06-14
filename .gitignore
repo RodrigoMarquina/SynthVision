@@ -13,3 +13,7 @@ SynthVision/Saved/
 SynthVision/DerivedDataCache/
 SynthVision/.vs/
 SynthVision/*.VC.db
+SynthVision/Plugins/*/Binaries/
+SynthVision/Plugins/*/Intermediate/
+SynthVision/.vscode/compileCommands_*/
+SynthVision/.vscode/compileCommands_*.json
