@@ -1,41 +1,36 @@
 import requests
 from schemas.session_schema import SessionConfig
-from orchestrator.config import host, port, WEATHER_MANAGER_PATH
+from orchestrator.config import host, port, WEATHER_MANAGER_PATH, CAPTURE_MANAGER_PATH
 
 class UnrealClient:
-    def __init__(self, host, port, actor_path):
+    def __init__(self, host, port, weather_path, capture_path):
         self.URL = f"http://{host}:{port}/remote/object/call"
-        self.path = actor_path
+        self.weather_path = weather_path
+        self.capture_path = capture_path
         self.session = requests.Session()
 
-    def _call(self, function_name, parameters):
+    def _call(self, function_name, parameters, object_path):
         body = {
-            "objectPath": self.path,
+            "objectPath": object_path,
             "functionName": function_name,
             "parameters": parameters
         }
         self.session.put(self.URL, json = body)
-        return self.session.put(self.URL, json=body)
 
     def set_time_of_day(self, value: float):
-        d = {"NewTime": value}
-        self._call("SetTimeOfDay", d)
+        self._call("SetTimeOfDay",  {"NewTime": value}, self.weather_path)
         
     def set_fog_density(self, value: float):
-        d = {"NewFog": value}
-        self._call("SetFogDensity", d)
+        self._call("SetFogDensity", {"NewFog": value}, self.weather_path)
 
     def set_rain_intensity(self, value: float):
-        d = {"NewRainIntensity": value}
-        self._call("SetRainIntensity", d)
+        self._call("SetRainIntensity", {"NewRainIntensity": value}, self.weather_path)
     
     def set_snow_intensity(self, value: float):
-        d = {"NewSnowIntensity": value}
-        self._call("SetSnowIntensity", d)
+        self._call("SetSnowIntensity", {"NewSnowIntensity": value}, self.weather_path)
     
     def set_wind_strength(self, value: float):
-        d = {"NewWindStrength": value}
-        self._call("SetWindStrength", d)
+        self._call("SetWindStrength", {"NewWindStrength": value}, self.weather_path)
 
     def apply_schema(self, schema: SessionConfig):
         self.set_time_of_day(schema.environment.time_of_day)
@@ -44,6 +39,6 @@ class UnrealClient:
         self.set_snow_intensity(schema.environment.snow_intensity)
         self.set_wind_strength(schema.environment.wind_intensity)
 
-    def take_screenshot(self, filename: str):
-        response = self._call("TakeScreenshot", {"filename": filename})
-        print(response)
+    def capture_RGB(self, filename: str):
+        self._call("CaptureRGB", {"FileName": filename + ".png"}, self.capture_path)
+

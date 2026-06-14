@@ -7,11 +7,11 @@ from .sampler import sampler
 from .writer import write_session
 from schemas.session_schema import SessionConfig
 from .unreal_client import UnrealClient
-from orchestrator.config import host, port, WEATHER_MANAGER_PATH
+from orchestrator.config import host, port, WEATHER_MANAGER_PATH, CAPTURE_MANAGER_PATH
 import os
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "../../configs/orchestrator.json")
 
-client = UnrealClient(host, port, WEATHER_MANAGER_PATH)
+client = UnrealClient(host, port, WEATHER_MANAGER_PATH, CAPTURE_MANAGER_PATH)
 
 with open(CONFIG_PATH) as f:
     orch_config = json.load(f)
@@ -100,7 +100,7 @@ for i in range(int(orch_config["session_count"] * orch_config["overage_factor"])
 
     time.sleep(0.5)
 
-    client.take_screenshot(config_name)
+    client.capture_RGB(config_name)
 
     output_path = write_session(session_dict, "output/", config_name)
 
