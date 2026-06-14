@@ -15,6 +15,7 @@ class UnrealClient:
             "parameters": parameters
         }
         self.session.put(self.URL, json = body)
+        return self.session.put(self.URL, json=body)
 
     def set_time_of_day(self, value: float):
         d = {"NewTime": value}
@@ -42,3 +43,7 @@ class UnrealClient:
         self.set_rain_intensity(schema.environment.rain_intensity)
         self.set_snow_intensity(schema.environment.snow_intensity)
         self.set_wind_strength(schema.environment.wind_intensity)
+
+    def take_screenshot(self, filename: str):
+        response = self._call("TakeScreenshot", {"filename": filename})
+        print(response)

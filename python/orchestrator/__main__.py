@@ -1,12 +1,19 @@
 import random
 import json
+import time
 from .constraints import apply_constraints
 from .naming import derive_tags, derive_config_name
 from .sampler import sampler
 from .writer import write_session
 from schemas.session_schema import SessionConfig
+from .unreal_client import UnrealClient
+from orchestrator.config import host, port, WEATHER_MANAGER_PATH
+import os
+CONFIG_PATH = os.path.join(os.path.dirname(__file__), "../../configs/orchestrator.json")
 
-with open("configs/orchestrator.json") as f:
+client = UnrealClient(host, port, WEATHER_MANAGER_PATH)
+
+with open(CONFIG_PATH) as f:
     orch_config = json.load(f)
 
 dist = orch_config["drone_count_distribution"]
@@ -14,7 +21,7 @@ dist = orch_config["drone_count_distribution"]
 manifest = []
 
 for i in range(int(orch_config["session_count"] * orch_config["overage_factor"])):
-    environment_samples = apply_constraints(sampler("configs/orchestrator.json", i))
+    environment_samples = apply_constraints(sampler(CONFIG_PATH, i))
 
     drone_count = random.choices([0, 1, 2, 3, 4], weights=[dist["0"], dist["1"], dist["2"], dist["3"], dist["4"]], k=1)[0]
 
@@ -87,7 +94,13 @@ for i in range(int(orch_config["session_count"] * orch_config["overage_factor"])
 
     }
 
-    SessionConfig(**session_dict)
+    session = SessionConfig(**session_dict)
+
+    client.apply_schema(session)
+
+    time.sleep(0.5)
+
+    client.take_screenshot(config_name)
 
     output_path = write_session(session_dict, "output/", config_name)
 
