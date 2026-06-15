@@ -1,22 +1,24 @@
 import random
 import json
 import time
+import math
 from .constraints import apply_constraints
 from .naming import derive_tags, derive_config_name
 from .sampler import sampler
 from .writer import write_session
 from schemas.session_schema import SessionConfig
 from .unreal_client import UnrealClient
-from orchestrator.config import host, port, WEATHER_MANAGER_PATH, CAPTURE_MANAGER_PATH
+from orchestrator.config import host, port, WEATHER_MANAGER_PATH, CAPTURE_MANAGER_PATH, DRONE_PATHS
 import os
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "../../configs/orchestrator.json")
 
-client = UnrealClient(host, port, WEATHER_MANAGER_PATH, CAPTURE_MANAGER_PATH)
+client = UnrealClient(host, port, WEATHER_MANAGER_PATH, CAPTURE_MANAGER_PATH, DRONE_PATHS)
 
 with open(CONFIG_PATH) as f:
     orch_config = json.load(f)
 
 dist = orch_config["drone_count_distribution"]
+cam_cfg = orch_config["camera"]
 
 manifest = []
 
@@ -29,6 +31,37 @@ for i in range(int(orch_config["session_count"] * orch_config["overage_factor"])
 
     config_name = derive_config_name(environment_samples, i)
 
+    cam_rng = random.Random(i)
+    cam_x = cam_rng.uniform(-cam_cfg["zone_half_extent"], cam_cfg["zone_half_extent"])
+    cam_y = cam_rng.uniform(-cam_cfg["zone_half_extent"], cam_cfg["zone_half_extent"])
+    cam_z = cam_cfg["zone_height"] 
+    cam_roll = 0.0
+
+    sv_min_xy = 20.0
+    sv_max_xy = 80.0
+    sv_min_alt = 10.0
+    sv_max_alt = 120.0
+
+    drone_positions = []
+    for _ in range(drone_count):
+        angle = cam_rng.uniform(0, 2 * math.pi)
+        radial_dist = cam_rng.uniform(sv_min_xy, sv_max_xy)
+        drone_x = cam_x + math.cos(angle) * radial_dist
+        drone_y = cam_y + math.sin(angle) * radial_dist
+        drone_z = cam_rng.uniform(sv_min_alt, sv_max_alt)
+        drone_positions.append((drone_x, drone_y, drone_z))
+
+    if drone_count > 0:
+        tx, ty, tz = drone_positions[0]
+        dx, dy, dz = tx - cam_x, ty - cam_y, tz - cam_z
+        cam_yaw = math.degrees(math.atan2(dy, dx))
+        cam_pitch = math.degrees(math.atan2(dz, math.sqrt(dx**2 + dy**2)))
+        cam_pitch += cam_rng.uniform(-cam_cfg["look_at_jitter_deg"], cam_cfg["look_at_jitter_deg"])
+        cam_yaw += cam_rng.uniform(-cam_cfg["look_at_jitter_deg"], cam_cfg["look_at_jitter_deg"])
+    else:
+        cam_pitch = cam_rng.uniform(-90.0, 90.0)
+        cam_yaw = cam_rng.uniform(0.0, 360.0)
+        
     session_dict = {
         "config_name": config_name,
         "seed": i,
@@ -46,10 +79,12 @@ for i in range(int(orch_config["session_count"] * orch_config["overage_factor"])
         },
 
         "camera": {
-            "zone_half_extent": 5.0,
-            "zone_height": 1.5,
-            "fov": 90.0,
-            "look_at_jitter_deg": 15.0
+            "position": [cam_x, cam_y, cam_z],
+            "rotation": [cam_pitch, cam_yaw, cam_roll],
+            "zone_half_extent": cam_cfg["zone_half_extent"],
+            "zone_height": cam_cfg["zone_height"],
+            "fov": cam_cfg["fov"],
+            "look_at_jitter_deg": cam_cfg["look_at_jitter_deg"]
         },
 
         "subjects": [
@@ -98,7 +133,9 @@ for i in range(int(orch_config["session_count"] * orch_config["overage_factor"])
 
     client.apply_schema(session)
 
-    time.sleep(0.5)
+    client.set_drone_transform(drone_positions)
+
+    time.sleep(5)
 
     client.capture_RGB(config_name)
 

@@ -14,10 +14,19 @@
         "rain_intensity_max": 1.0,
         "snow_intensity_min": 0.0,
         "snow_intensity_max": 1.0,
+        "rain_probability": 0.25,
+        "snow_probability": 0.15,
         "wind_intensity_min": 0.0,
         "wind_intensity_max": 1.0,
         "ground_material_variant_min": 0,
         "ground_material_variant_max": 5
+    },
+
+    "camera": {
+        "zone_half_extent": 5.0,
+        "zone_height": 1.5,
+        "look_at_jitter_deg": 15.0,
+        "fov": 90.0
     },
 
     "drone_count_distribution": {

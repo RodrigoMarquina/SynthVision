@@ -41,6 +41,8 @@ class EnvironmentConfig(BaseModel):
         return self 
         
 class CameraConfig(BaseModel):
+    position: Tuple[float, float, float]   # x, y, z in UE cm
+    rotation: Tuple[float, float, float]   # pitch, yaw, roll in degrees
     zone_half_extent: float
     zone_height: float
     fov: Literal[90.0]
