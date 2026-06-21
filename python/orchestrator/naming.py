@@ -38,12 +38,12 @@ def derive_tags(environment_samples, subject_count):
 
     return tag_list
 
-def derive_config_name(environment_samples, seed):
+def derive_config_name(environment_samples, seed, drone_count=0):
 
     config = derive_tags(environment_samples, 0)
 
     time_tag = next((t for t in config if t in {"daytime", "dusk", "dawn", "night"}), "unknown")
     weather_tag = next((t for t in config if t in {"clear", "overcast", "light_rain", "heavy_rain", "snow"}), "unknown")
-    
-    return f"{time_tag}_{weather_tag}_s{seed}"
+
+    return f"{time_tag}_{weather_tag}_d{drone_count}_s{seed}"
     

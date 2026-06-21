@@ -39,6 +39,30 @@ class UnrealClient:
     def capture_RGB(self, filename: str):
         self._call("CaptureRGB", {"FileName": filename + ".png"}, self.capture_path)
 
+    def get_ground_height(self, x_m: float, y_m: float) -> float:
+        body = {
+            "objectPath": self.capture_path,
+            "functionName": "GetGroundHeight",
+            "parameters": {"X": x_m * 100, "Y": y_m * 100}
+        }
+        r = self.session.put(self.URL, json=body)
+        return r.json().get("GroundZ", 0.0)
+
+    def check_line_of_sight(self, position_m: tuple) -> bool:
+        body = {
+            "objectPath": self.capture_path,
+            "functionName": "CheckLineOfSight",
+            "parameters": {
+                "DroneLocation": {
+                    "X": position_m[0] * 100,
+                    "Y": position_m[1] * 100,
+                    "Z": position_m[2] * 100
+                }
+            }
+        }
+        r = self.session.put(self.URL, json=body)
+        return r.json().get("bVisible", False)
+
     def set_camera_transform(self, location: tuple, rotation: tuple):
         self._call("SetCameraTransform", {
             "NewLocation": {"X": location[0] * 100, "Y": location[1] * 100, "Z": location[2] * 100},
@@ -55,6 +79,13 @@ class UnrealClient:
                 loc = park
             self._call("SetDroneTransform", {"NewLocation": loc}, path)
 
+    def set_drone_colors(self, actor_index: int, color_body: tuple, color_detail: tuple):
+        self._call("SetDroneColors", {
+            "ActorIndex": actor_index,
+            "BodyColor": {"R": color_body[0], "G": color_body[1], "B": color_body[2], "A": 1.0},
+            "DetailColor": {"R": color_detail[0], "G": color_detail[1], "B": color_detail[2], "A": 1.0}
+        }, self.capture_path)
+        
     def apply_schema(self, schema: SessionConfig):
         self.set_camera_transform(schema.camera.position, schema.camera.rotation)
         self.set_time_of_day(schema.environment.time_of_day)

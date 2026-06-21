@@ -2,13 +2,15 @@ host = "localhost"
 
 port = 30010
 
-WEATHER_MANAGER_PATH = "/Game/Map.Map:PersistentLevel.BP_WeatherManager_C_UAID_4C796ECF47FB31E302_2046031831"
+WEATHER_MANAGER_PATH = "/Game/World.World:PersistentLevel.BP_WeatherManager_C_0"
 
-CAPTURE_MANAGER_PATH = "/Game/Map.Map:PersistentLevel.BP_CaptureManager_C_UAID_4C796ECF47FBC7E402_1582702287"
+CAPTURE_MANAGER_PATH = "/Game/World.World:PersistentLevel.BP_CaptureManager_C_0"
+
+SCREENSHOTS_DIR = r"C:\Users\rodri\Documents\SynthVision\SynthVision\Saved\Screenshots\WindowsEditor"
 
 DRONE_PATHS = [
-    "/Game/Map.Map:PersistentLevel.BP_Drone_C_UAID_4C796ECF47FB15E502_1787002015",
-    "/Game/Map.Map:PersistentLevel.BP_Drone_C_UAID_4C796ECF47FB15E502_1789959016",
-    "/Game/Map.Map:PersistentLevel.BP_Drone_C_UAID_4C796ECF47FB15E502_1792489017",
-    "/Game/Map.Map:PersistentLevel.BP_Drone_C_UAID_4C796ECF47FB15E502_1794013018",
+    "/Game/World.World:PersistentLevel.BP_Drone_C_0",
+    "/Game/World.World:PersistentLevel.BP_Drone_C_1",
+    "/Game/World.World:PersistentLevel.BP_Drone_C_2",
+    "/Game/World.World:PersistentLevel.BP_Drone_C_3",
 ]

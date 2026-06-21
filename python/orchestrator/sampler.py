@@ -1,5 +1,6 @@
 import random
 import json
+import colorsys
 
 def sampler(orchestrator_path, seed):
     random.seed(seed)
@@ -20,3 +21,10 @@ def sampler(orchestrator_path, seed):
     }
 
     return environment_samples
+
+def random_drone_color(rng):
+    h = rng.uniform(0.0, 1.0)
+    s = rng.uniform(0.0, 0.55)
+    v = rng.uniform(0.05, 0.9)
+    r, g, b = colorsys.hsv_to_rgb(h, s, v)
+    return (round(r, 4), round(g, 4), round(b, 4))

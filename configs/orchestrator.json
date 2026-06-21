@@ -4,8 +4,8 @@
     "overage_factor": 1.2,
     
     "sampling_ranges": {
-        "time_of_day_min": 6.0,
-        "time_of_day_max": 20.0,
+        "time_of_day_min": 7.5,
+        "time_of_day_max": 18.5,
         "cloud_coverage_min": 0.0,
         "cloud_coverage_max": 1.0,
         "fog_density_min": 0.0,
@@ -23,10 +23,17 @@
     },
 
     "camera": {
-        "zone_half_extent": 5.0,
-        "zone_height": 1.5,
-        "look_at_jitter_deg": 15.0,
+        "zone_half_extent": 1500.0,
+        "zone_height_min": 5.0,
+        "zone_height_max": 150.0,
         "fov": 90.0
+    },
+
+    "spawn_volume": {
+        "depth_min": 15.0,
+        "depth_max": 80.0,
+        "altitude_min": 2.0,
+        "frame_margin": 0.8
     },
 
     "drone_count_distribution": {

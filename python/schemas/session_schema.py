@@ -3,10 +3,10 @@ from typing_extensions import Self
 from pydantic import BaseModel, model_validator
 
 class SpawnVolume(BaseModel):
-    xy_min_offset: float
-    xy_max_offset: float
+    depth_min: float
+    depth_max: float
     altitude_min: float
-    altitude_max: float
+    frame_margin: float
 
 class MotionBlur(BaseModel):
     speed_min: float
@@ -17,7 +17,6 @@ class SubjectConfig(BaseModel):
     class_label: Literal["drone"]
     count: int
     placement: Literal["random", "explicit"]
-    asset_variant: int
     spawn_volume: SpawnVolume
     scale_variance: float
     rotation_variance: float
@@ -41,12 +40,12 @@ class EnvironmentConfig(BaseModel):
         return self 
         
 class CameraConfig(BaseModel):
-    position: Tuple[float, float, float]   # x, y, z in UE cm
-    rotation: Tuple[float, float, float]   # pitch, yaw, roll in degrees
+    position: Tuple[float, float, float]
+    rotation: Tuple[float, float, float]
     zone_half_extent: float
-    zone_height: float
+    zone_height_min: float
+    zone_height_max: float
     fov: Literal[90.0]
-    look_at_jitter_deg: float
 
 class CaptureConfig(BaseModel):
     passes: List[Literal["rgb", "depth", "stencil"]]
