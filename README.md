@@ -5,6 +5,8 @@ A synthetic data generation pipeline for drone detection, built in Unreal Engine
 **Author:** Rodrigo Marquina  
 **Built:** June 2026
 
+https://studio.youtube.com/video/VibhI9egy1c/edit
+
 ---
 
 ## Overview
